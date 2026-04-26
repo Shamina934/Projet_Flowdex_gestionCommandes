@@ -10,8 +10,23 @@ const Order = db.define('orders', {
   total:     { type: DataTypes.DECIMAL(10,2), defaultValue: 0 },
 }, { tableName: 'orders', timestamps: false });
 
-Order.belongsTo(Client,   { foreignKey: 'client_id', as: 'client' });
-Order.belongsToMany(Product, { through: 'order_products', foreignKey: 'order_id', as: 'products' });
-Product.belongsToMany(Order, { through: 'order_products', foreignKey: 'product_id' });
+Order.belongsTo(Client, { foreignKey: 'client_id', as: 'client' });
+
+Order.belongsToMany(Product, {
+  through: {
+    model: 'order_products',
+    timestamps: false,   // ← c'est ça qui règle l'erreur createdAt
+  },
+  foreignKey: 'order_id',
+  as: 'products'
+});
+
+Product.belongsToMany(Order, {
+  through: {
+    model: 'order_products',
+    timestamps: false,
+  },
+  foreignKey: 'product_id'
+});
 
 module.exports = Order;

@@ -40,10 +40,25 @@ export default function ClientsPage() {
       Alert.alert("Erreur", "Nom et email obligatoires");
       return;
     }
+
+    // Vérifie le format email
     if (!email.includes("@") || !email.includes(".")) {
-      Alert.alert("Erreur", "Email invalide");
+      Alert.alert("Erreur", "Format email invalide");
       return;
     }
+
+    // Vérifie que le nom a au moins 2 caractères
+    if (name.trim().length < 2) {
+      Alert.alert("Erreur", "Le nom doit contenir au moins 2 caractères");
+      return;
+    }
+
+    // Vérifie le téléphone si renseigné (optionnel mais doit être numérique)
+    if (phone && phone.length < 8) {
+      Alert.alert("Erreur", "Numéro de téléphone invalide");
+      return;
+    }
+
     fetch(API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -54,6 +69,7 @@ export default function ClientsPage() {
         setEmail("");
         setPhone("");
         charger();
+        Alert.alert("Succès", "Client ajouté !");
       })
       .catch(() => Alert.alert("Erreur", "Ajout impossible"));
   };
