@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import {
   Alert,
   FlatList,
+  Modal,
   Platform,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 
 const API =
@@ -20,6 +20,7 @@ type Product = { id: number; name: string; price: string; description: string };
 
 export default function ProduitsPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [modal, setModal] = useState(false);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDesc] = useState("");
@@ -49,7 +50,9 @@ export default function ProduitsPage() {
         setName("");
         setPrice("");
         setDesc("");
+        setModal(false);
         charger();
+        Alert.alert("Succès", "Produit ajouté !");
       })
       .catch(() => Alert.alert("Erreur", "Ajout impossible"));
   };
@@ -70,13 +73,20 @@ export default function ProduitsPage() {
   };
 
   return (
-    <ScrollView style={s.scroll} contentContainerStyle={s.content}>
-      <Text style={s.titre}>Liste des produits</Text>
+    <View style={s.container}>
+      {/* Header */}
+      <View style={s.header}>
+        <Text style={s.titre}>Produits</Text>
+        <TouchableOpacity style={s.btnAjouter} onPress={() => setModal(true)}>
+          <Text style={s.btnAjouterTxt}>+ Ajouter</Text>
+        </TouchableOpacity>
+      </View>
 
+      {/* Liste */}
       <FlatList
         data={products}
-        scrollEnabled={false}
         keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
         renderItem={({ item }) => (
           <View style={s.card}>
             <View style={{ flex: 1 }}>
@@ -92,51 +102,76 @@ export default function ProduitsPage() {
           </View>
         )}
         ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
+        ListEmptyComponent={<Text style={s.det}>Aucun produit</Text>}
       />
 
-      <Text style={s.sousTitre}>Ajouter un produit</Text>
-      <TextInput
-        style={s.input}
-        placeholder="Nom *"
-        value={name}
-        onChangeText={setName}
-      />
-      <TextInput
-        style={s.input}
-        placeholder="Prix * (ex: 2500)"
-        value={price}
-        onChangeText={setPrice}
-        keyboardType="numeric"
-      />
-      <TextInput
-        style={s.input}
-        placeholder="Description"
-        value={description}
-        onChangeText={setDesc}
-      />
-      <TouchableOpacity style={s.btn} onPress={ajouter}>
-        <Text style={s.btnTxt}>Ajouter</Text>
-      </TouchableOpacity>
-    </ScrollView>
+      {/* Modal ajout */}
+      <Modal
+        visible={modal}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setModal(false)}
+      >
+        <TouchableOpacity
+          style={s.overlay}
+          activeOpacity={1}
+          onPress={() => setModal(false)}
+        >
+          <TouchableOpacity activeOpacity={1} style={s.sheet}>
+            <View style={s.handle} />
+            <Text style={s.sheetTitre}>Nouveau produit</Text>
+            <TextInput
+              style={s.input}
+              placeholder="Nom *"
+              value={name}
+              onChangeText={setName}
+            />
+            <TextInput
+              style={s.input}
+              placeholder="Prix * (ex: 2500)"
+              value={price}
+              onChangeText={setPrice}
+              keyboardType="numeric"
+            />
+            <TextInput
+              style={s.input}
+              placeholder="Description"
+              value={description}
+              onChangeText={setDesc}
+            />
+            <TouchableOpacity style={s.btn} onPress={ajouter}>
+              <Text style={s.btnTxt}>Ajouter</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={s.btnCancel}
+              onPress={() => setModal(false)}
+            >
+              <Text style={s.btnCancelTxt}>Annuler</Text>
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
+    </View>
   );
 }
 
 const s = StyleSheet.create({
-  scroll: { flex: 1, backgroundColor: "#F0FAF5" },
-  content: { padding: 16, paddingBottom: 40 },
-  titre: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#1A3020",
-    marginBottom: 12,
+  container: { flex: 1, backgroundColor: "#F0FAF5" },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 16,
+    paddingBottom: 8,
   },
-  sousTitre: {
-    fontSize: 17,
-    fontWeight: "bold",
-    color: "#1A3020",
-    marginTop: 24,
-    marginBottom: 10,
+  titre: { fontSize: 22, fontWeight: "bold", color: "#1A3020" },
+  btnAjouter: {
+    backgroundColor: "#D33243",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
   },
+  btnAjouterTxt: { color: "#fff", fontWeight: "bold", fontSize: 14 },
   card: {
     backgroundColor: "#fff",
     borderRadius: 10,
@@ -147,9 +182,37 @@ const s = StyleSheet.create({
     alignItems: "center",
   },
   nom: { fontSize: 15, fontWeight: "bold", color: "#1A3020" },
-  prix: { fontSize: 14, color: "#bd1f56", marginTop: 2 },
+  prix: { fontSize: 14, color: "#D33243", marginTop: 2 },
   det: { fontSize: 13, color: "#3B9890", marginTop: 2 },
-  del: { color: "#bd1f56", fontSize: 13 },
+  del: { color: "#D33243", fontSize: 13 },
+  overlay: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  sheet: {
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 20,
+    paddingBottom: 40,
+    borderTopWidth: 1,
+    borderColor: "#A9BF53",
+  },
+  handle: {
+    width: 40,
+    height: 4,
+    backgroundColor: "#ccc",
+    borderRadius: 2,
+    alignSelf: "center",
+    marginBottom: 16,
+  },
+  sheetTitre: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#1A3020",
+    marginBottom: 16,
+  },
   input: {
     borderWidth: 1,
     borderColor: "#A9BF53",
@@ -157,14 +220,16 @@ const s = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
     fontSize: 14,
-    backgroundColor: "#fff",
+    backgroundColor: "#F0FAF5",
     color: "#1A3020",
   },
   btn: {
-    backgroundColor: "#bd1f56",
+    backgroundColor: "#D33243",
     padding: 14,
     borderRadius: 8,
     alignItems: "center",
   },
   btnTxt: { color: "#fff", fontSize: 16, fontWeight: "bold" },
+  btnCancel: { padding: 14, alignItems: "center" },
+  btnCancelTxt: { color: "#3B9890", fontSize: 14 },
 });
