@@ -14,7 +14,7 @@ import {
 const BASE =
   Platform.OS === "web"
     ? "http://localhost:3000/api"
-    : "http://192.168.1.21:3000/api";
+    : "http://192.168.43.148:3000/api";
 
 type Client = { id: number; name: string };
 type Product = { id: number; name: string; price: string };

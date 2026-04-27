@@ -8,13 +8,13 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 
 const API =
   Platform.OS === "web"
     ? "http://localhost:3000/api/products"
-    : "http://192.168.1.21:3000/api/products";
+    : "http://192.168.43.148:3000/api/products";
 
 type Product = { id: number; name: string; price: string; description: string };
 

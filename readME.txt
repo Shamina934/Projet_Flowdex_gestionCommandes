@@ -1,12 +1,10 @@
-Voici exactement quoi faire dans l'ordre :
 
-**1 — Démarrer MySQL dans XAMPP**
+1 — Démarrer MySQL dans XAMPP
 
-Ouvre le panneau XAMPP → clique **Start** à côté de **MySQL** → attends que ça passe en vert.
+Ouvre le panneau XAMPP → clique **Start** à côté de **MySQL** → attends que ça passe en vert. faire pareil pour Apache pour pouvoir aller dans http://localhost/phpmyadmin et gérer la bdd
 
----
 
-**2 — Lancer le backend**
+2 — Lancer le backend
 
 Ouvre un terminal dans VS Code dans le dossier `gestion-commandes-api` :
 

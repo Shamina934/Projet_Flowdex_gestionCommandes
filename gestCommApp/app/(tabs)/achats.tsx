@@ -15,7 +15,7 @@ import {
 const BASE =
   Platform.OS === "web"
     ? "http://localhost:3000/api"
-    : "http://192.168.1.21:3000/api";
+    : "http://192.168.43.148:3000/api";
 
 type Product = { id: number; name: string };
 type Purchase = {
